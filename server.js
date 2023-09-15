@@ -6,13 +6,13 @@ const path = require('path');
 
 const app = express();
 
-const PORT = process.env.PORT || 3001;
 
 // Middleware for parsing JSON and URL-encoded data
 /* app.use(express.json());
-   app.use(express.urlencoded({ extended: true })); not being used at the momment.*/
+app.use(express.urlencoded({ extended: true })); not being used at the momment.*/
 app.use(express.static('Develop/public'));
 
+const PORT = process.env.PORT || 3001;
 
 app.get('/', (req, res) => // this route serves up the homepage. which is defaulted to index file.
       res.sendFile(path.join(__dirname, '/assets/js/index.html'))
@@ -20,8 +20,8 @@ app.get('/', (req, res) => // this route serves up the homepage. which is defaul
 
 app.get('/notes', (req, res) => {// this route serves up the notes page
       // res.sendFile(path.join(__dirname, 'notes.html'));
-      console.log('res.params', req.params);
-      res.sendFile(path.join(__dirname, 'Develop/public/assets/js/notes.html'))
+      console.log('req.params', req.params);
+      res.sendFile(path.join(__dirname, 'Develop/public/assets/notes.html'))
 });
 
 // app.get('*', (req, res) => // the default route to serve up all other request i beleive. DOUBLE CHECK!!!!
