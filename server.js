@@ -2,7 +2,7 @@
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
-const uuidv4 = require('uuidv4');
+const { v4: uuidv4 } = require('uuid');
 
 const app = express();
 
@@ -18,7 +18,7 @@ app.get('/', (req, res) => // this route serves up the homepage. which is defaul
       res.sendFile(path.join(__dirname, 'Develop/public/index.html'))
 );
 app.get('/notes', (req, res) => {// this route serves up the notes page
-      console.log('req.params', req.params);
+      // console.log('rEq.pArAms:', req.params);
 
       res.sendFile(path.join(__dirname, 'Develop/public/notes.html'))
 });
@@ -44,7 +44,7 @@ app.get('/api/notes', (req, res) => { // done..
 });
 app.post('/api/notes', (req, res) => {
       // Read the data from db.json
-      const notes = JSON.parse(fs.readFileSync('db.json', 'utf8'));
+      const notes = JSON.parse(fs.readFileSync('./Develop/db/db.json', 'utf8'));
 
       const newNote = {
             id: uuidv4(),
@@ -61,13 +61,13 @@ app.post('/api/notes', (req, res) => {
 
 app.delete('/api/notes/:id', (req, res) => { // done..
       const notesObj = JSON.parse(fs.readFileSync('./Develop/db/db.json', 'utf8'));// WORKING.
-      const requestedId = parseInt(req.params.id);
+      const requestedId =req.params.id;
       // console.log("notesObj: ", notesObj);
       // console.log('rEq.pArAms.id: ', requestedId);
       // console.log('typeof(req.params.id) ', typeof (requestedId));
 
       const noteIndex = notesObj.findIndex((note) => {
-            // console.log('note.id ValUe iS:', note.id, ' requestedId: ', requestedId);
+            console.log('note.id ValUe iS:', note.id, ' requestedId: ', requestedId);
             return note.id === requestedId;
       }); // return -1 WHY?
       // console.log('nOteIndEx: ', noteIndex); 
