@@ -2,6 +2,7 @@
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
+const uuidv4 = require('uuidv4');
 
 const app = express();
 
@@ -16,17 +17,16 @@ const PORT = process.env.PORT || 3001;
 app.get('/', (req, res) => // this route serves up the homepage. which is defaulted to index file.
       res.sendFile(path.join(__dirname, 'Develop/public/index.html'))
 );
-
 app.get('/notes', (req, res) => {// this route serves up the notes page
       console.log('req.params', req.params);
-      
+
       res.sendFile(path.join(__dirname, 'Develop/public/notes.html'))
 });
 
 
 // These routes are for handling request to the api endpoints only. the can read static data and render it back to the client.
-app.get('/api/notes', (req, res) => {
-      console.log('__direname', __dirname)
+app.get('/api/notes', (req, res) => { // done.. 
+      // console.log('__diRnAme iS:', __dirname)
 
       const dbFilePath = path.join(__dirname, 'db.json');
 
@@ -53,30 +53,36 @@ app.post('/api/notes', (req, res) => {
       };
 
       notes.push(newNote);
-  
+
       fs.writeFileSync('./Develop/db/db.json', JSON.stringify(notes));
 
       res.json(newNote);
 });
 
-app.delete('/api/notes/:id', (req, res) => {
+app.delete('/api/notes/:id', (req, res) => { // done..
+      const notesObj = JSON.parse(fs.readFileSync('./Develop/db/db.json', 'utf8'));// WORKING.
+      const requestedId = parseInt(req.params.id);
+      // console.log("notesObj: ", notesObj);
+      // console.log('rEq.pArAms.id: ', requestedId);
+      // console.log('typeof(req.params.id) ', typeof (requestedId));
 
-      const notes = JSON.parse(fs.readFileSync('./Develop/db/db.json', 'utf8'));// WORKS fine.
-      console.log("notes", notes);
-
-      const noteIndex = notes.findIndex((note) => note.id === req.params.id);
+      const noteIndex = notesObj.findIndex((note) => {
+            // console.log('note.id ValUe iS:', note.id, ' requestedId: ', requestedId);
+            return note.id === requestedId;
+      }); // return -1 WHY?
+      // console.log('nOteIndEx: ', noteIndex); 
 
       if (noteIndex === -1) {
             return res.status(404).json({ error: 'NotE nOt fOunD' });
       }
 
-      notes.splice(noteIndex, 1);
+      notesObj.splice(noteIndex, 1);
 
-      fs.writeFileSync('./Develop/db/db.json', JSON.stringify(notes));
+      fs.writeFileSync('./Develop/db/db.json', JSON.stringify(notesObj));
 
       res.json({ message: 'NOtE dElEtEd' });
 });
 
-app.listen(PORT, () => console.log(`App lIstEniNg at http://localhost:${PORT}`));
+app.listen(PORT, () => console.log(`ApP lIstEniNg at http://localhost:${PORT}`));
 
 
