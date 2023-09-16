@@ -1,10 +1,10 @@
 let noteTitle;
 let noteText;
-let saveNoteBtn;
-let newNoteBtn;
-let noteList;
+let saveNoteBtn; // 'save' icon not visible until note text is inputed.
+let newNoteBtn; // ' + ' button
+let noteList; // gets acces to the noteList container.
 
-if (window.location.pathname === '/notes') {
+if (window.location.pathname === '/notes') { // assignes variables to the selectors if we are on /page path.
   noteTitle = document.querySelector('.note-title');
   noteText = document.querySelector('.note-textarea');
   saveNoteBtn = document.querySelector('.save-note');
@@ -25,6 +25,7 @@ const hide = (elem) => {
 // activeNote is used to keep track of the note in the textarea
 let activeNote = {};
 
+//#region API Calls: 
 const getNotes = () =>
   fetch('/api/notes', {
     method: 'GET',
@@ -43,12 +44,13 @@ const saveNote = (note) =>
   });
 
 const deleteNote = (id) =>
-  fetch(`/api/notes/${id}`, {
+  fetch(`/api/notes/${id}`, { // i think this id might need more added to the path bc not deleting.
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
     },
   });
+//#endregion
 
 const renderActiveNote = () => {
   hide(saveNoteBtn);
@@ -72,6 +74,7 @@ const handleNoteSave = () => {
     text: noteText.value,
   };
   saveNote(newNote).then(() => {
+    console.log("handleNoteSave is ExecUtIng!!!")
     getAndRenderNotes();
     renderActiveNote();
   });
@@ -84,8 +87,9 @@ const handleNoteDelete = (e) => {
 
   const note = e.target;
   const noteId = JSON.parse(note.parentElement.getAttribute('data-note')).id;
+  console.log('note', note);
 
-  if (activeNote.id === noteId) {
+  if (activeNote.id === noteId) { // what does this do? it clears the activeNote object.
     activeNote = {};
   }
 
@@ -178,52 +182,6 @@ if (window.location.pathname === '/notes') {
   newNoteBtn.addEventListener('click', handleNewNoteView);
   noteTitle.addEventListener('keyup', handleRenderSaveBtn);
   noteText.addEventListener('keyup', handleRenderSaveBtn);
-}
+} // basically if the url pathname is ./notes, add event listeners to all input events.
 
 getAndRenderNotes();
-
-
-/* sample code from activity 07: 
-
-console.log('hello');
-const termEl = document.getElementById('terms');
-const termButton = document.getElementById('term-btn');
-
-// Invoked by the buttonHandler function to fetch terms from the data store
-const getTerms = async () => {
-  const result = await fetch('/api/terms', {
-    method: 'GET',
-  });
-  const json = await result.json();
-  return json;
-};
-
-// Invoked by the forEach() method in the buttonHandler function to properly set up each term to be rendered to the index.html page
-const renderTerm = (term) => {
-  const cardEl = document.createElement('div');
-  const cardBodyEl = document.createElement('div');
-  const cardBodyTitle = document.createElement('div');
-
-  cardEl.classList.add('card', 'p-5');
-  cardBodyEl.classList.add('card-body', 'p-5');
-  cardBodyTitle.classList.add('card-header', 'card-title', 'link');
-
-  cardBodyTitle.innerHTML = `<a href=${term.url}>${term.term}</a>`;
-  cardBodyEl.innerText = term.definition;
-  termEl.appendChild(cardBodyTitle);
-  termEl.appendChild(cardBodyEl);
-};
-
-// Event Listener calls this method to invoke the getTerms function and render each returned 'term' to the index.html page
-const buttonHandler = () =>
-  getTerms().then((response) => response.forEach((item) => renderTerm(item)));
-
-// Event Listener invoked when the Fetch Terms button is clicked
-termButton.addEventListener('click', buttonHandler);
-
-
-
-
-
-
-*/
