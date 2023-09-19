@@ -42,7 +42,7 @@ app.get('/api/notes', (req, res) => { // done..
             res.json(notes);
       });
 });
-app.post('/api/notes', (req, res) => {
+app.post('/api/notes', (req, res) => { // done.. 
       // Read the data from db.json
       const notes = JSON.parse(fs.readFileSync('./Develop/db/db.json', 'utf8'));
 
@@ -58,7 +58,6 @@ app.post('/api/notes', (req, res) => {
 
       res.json(newNote);
 });
-
 app.delete('/api/notes/:id', (req, res) => { // done..
       const notesObj = JSON.parse(fs.readFileSync('./Develop/db/db.json', 'utf8'));// WORKING.
       const requestedId =req.params.id;
